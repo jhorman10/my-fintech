@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Ejecutar lint-staged para verificar código antes del commit
+npx lint-staged
+
+# Verificar que el código compile sin errores
+npm run build
