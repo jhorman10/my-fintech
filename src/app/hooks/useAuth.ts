@@ -20,8 +20,10 @@ export const useAuth = () => {
       setLoading(true);
       const currentUser = await authUseCase.getCurrentUser();
       setUser(currentUser);
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error checking user');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -47,7 +49,9 @@ export const useAuth = () => {
     try {
       setLoading(true);
       await authUseCase.logout();
+      // Limpiar inmediatamente el estado local
       setUser(null);
+      setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Logout failed');
     } finally {
