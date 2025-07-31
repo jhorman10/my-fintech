@@ -148,7 +148,7 @@ export const ApplyCreditPage: React.FC = () => {
               {products.map(product => (
                 <div
                   key={product.id}
-                  className="bg-white border rounded-lg p-6 hover:shadow-lg transition-shadow"
+                  className="bg-white dark:bg-dark-surface border rounded-lg p-6 hover:shadow-lg transition-shadow"
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -160,7 +160,7 @@ export const ApplyCreditPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{product.description}</p>
+                  <p className="text-gray-600 dark:text-dark-text-secondary text-sm mb-4 line-clamp-3">{product.description}</p>
 
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between text-sm">
@@ -179,7 +179,7 @@ export const ApplyCreditPage: React.FC = () => {
 
                   <div className="mb-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">Requisitos:</p>
-                    <ul className="text-xs text-gray-600 space-y-1">
+                    <ul className="text-xs text-gray-600 dark:text-dark-text-secondary space-y-1">
                       {product.requirements.slice(0, 3).map((req, index) => (
                         <li key={index} className="flex items-start">
                           <span className="text-green-500 mr-1">•</span>
@@ -205,7 +205,7 @@ export const ApplyCreditPage: React.FC = () => {
       {/* Application Form */}
       {showForm && selectedProduct && (
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white border rounded-lg p-6">
+          <div className="bg-white dark:bg-dark-surface border rounded-lg p-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">

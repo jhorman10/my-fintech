@@ -8,6 +8,7 @@ import { ApplyCreditPage } from './app/pages/ApplyCreditPage';
 import { NotFoundPage } from './app/pages/NotFoundPage';
 import { useAuth } from './app/hooks/useAuth';
 import { LoadingSpinner } from './app/components/common';
+import { ThemeProvider } from './app/hooks/useTheme';
 import './App.css';
 
 function App() {
@@ -15,51 +16,55 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <LoadingSpinner text="Cargando aplicación..." />
-      </div>
+      <ThemeProvider>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
+          <LoadingSpinner text="Cargando aplicación..." />
+        </div>
+      </ThemeProvider>
     );
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <DashboardPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/transactions"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <TransactionsPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/apply-credit"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <ApplyCreditPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/404" element={<NotFoundPage />} />
-        <Route path="*" element={<Navigate to="/404" replace />} />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DashboardPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <TransactionsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/apply-credit"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ApplyCreditPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/404" element={<NotFoundPage />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

@@ -51,8 +51,8 @@ export const TransactionsPage: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Filtros</h2>
+      <div className="bg-white dark:bg-dark-surface rounded-lg shadow-sm border p-6 mb-6">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-dark-text mb-4">Filtros</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -117,7 +117,7 @@ export const TransactionsPage: React.FC = () => {
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+      <div className="bg-white dark:bg-dark-surface rounded-lg shadow-sm border overflow-hidden">
         {loading ? (
           <div className="p-8">
             <LoadingSpinner text="Cargando transacciones..." />
@@ -155,7 +155,7 @@ export const TransactionsPage: React.FC = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-dark-surface divide-y divide-gray-200">
                   {filteredTransactions.length > 0 ? (
                     filteredTransactions.map(transaction => (
                       <tr key={transaction.id} className="hover:bg-gray-50">

@@ -30,10 +30,10 @@ export const DashboardPage: React.FC = () => {
     <div className="px-4 sm:px-0">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text dark:text-dark-text">
           Bienvenido, {user.name} {user.lastName}
         </h1>
-        <p className="text-gray-600">Aquí tienes un resumen de tu actividad financiera</p>
+        <p className="text-gray-600 dark:text-dark-text-secondary dark:text-dark-text-secondary">Aquí tienes un resumen de tu actividad financiera</p>
       </div>
 
       {/* Summary Cards */}
@@ -43,7 +43,7 @@ export const DashboardPage: React.FC = () => {
         <ErrorMessage message={creditsError} />
       ) : summary ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <svg
@@ -67,7 +67,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border">
             <div className="flex items-center">
               <div className="p-2 bg-red-100 rounded-lg">
                 <svg
@@ -93,7 +93,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border">
             <div className="flex items-center">
               <div className="p-2 bg-green-100 rounded-lg">
                 <svg
@@ -119,7 +119,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
+          <div className="bg-white dark:bg-dark-surface p-6 rounded-lg shadow-sm border">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
                 <svg
@@ -153,7 +153,7 @@ export const DashboardPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Active Credits */}
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="bg-white dark:bg-dark-surface rounded-lg shadow-sm border">
           <div className="p-6 border-b">
             <h2 className="text-lg font-semibold text-gray-900">Créditos Activos</h2>
           </div>
@@ -193,7 +193,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white rounded-lg shadow-sm border">
+        <div className="bg-white dark:bg-dark-surface rounded-lg shadow-sm border">
           <div className="p-6 border-b">
             <h2 className="text-lg font-semibold text-gray-900">Transacciones Recientes</h2>
           </div>
@@ -228,7 +228,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Suggested Products */}
-      <div className="mt-8 bg-white rounded-lg shadow-sm border">
+      <div className="mt-8 bg-white dark:bg-dark-surface rounded-lg shadow-sm border">
         <div className="p-6 border-b">
           <h2 className="text-lg font-semibold text-gray-900">Productos Sugeridos</h2>
         </div>
@@ -239,8 +239,8 @@ export const DashboardPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {products.slice(0, 4).map(product => (
                 <div key={product.id} className="border rounded-lg p-4">
-                  <h3 className="font-medium text-gray-900 mb-2">{product.name}</h3>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
+                  <h3 className="font-medium text-gray-900 dark:text-dark-text mb-2">{product.name}</h3>
+                  <p className="text-sm text-gray-600 dark:text-dark-text-secondary mb-3 line-clamp-2">{product.description}</p>
                   <div className="text-sm text-gray-500 mb-3">
                     <p>Tasa desde {product.interestRate}%</p>
                     <p>Hasta {formatCurrency(product.maxAmount)}</p>
