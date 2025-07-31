@@ -53,7 +53,7 @@ src/
 
 ```bash
 # Clonar el repositorio
-git clone <repository-url>
+git clone https://github.com/jhorman10/my-fintech.git
 cd my-fintech
 
 # Instalar dependencias
