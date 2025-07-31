@@ -1,257 +1,244 @@
-# React + TypeScript + Vite
+# My Fintech - Aplicación Financiera
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-# FinTech Pro - Plataforma de Gestión Crediticia
-
-Una aplicación web moderna de gestión financiera construida con React, TypeScript y Tailwind CSS, siguiendo los principios de Clean Architecture y Domain-Driven Design (DDD).
+Una aplicación fintech moderna construida con React, TypeScript y Tailwind CSS, implementando Clean Architecture y Domain-Driven Design (DDD).
 
 ## 🏗️ Arquitectura
 
-Este proyecto implementa una arquitectura limpia inspirada en Angular con las siguientes capas:
+El proyecto sigue los principios de **Clean Architecture** y **Domain-Driven Design (DDD)** con la siguiente estructura:
 
 ```
 src/
-├── app/                    # Capa de Presentación (UI)
-│   ├── components/         # Componentes reutilizables
-│   ├── pages/             # Páginas de la aplicación
-│   └── hooks/             # Custom hooks de React
-├── application/           # Capa de Aplicación
-│   ├── use-cases/         # Casos de uso del negocio
-│   └── dtos/              # Objetos de transferencia de datos
-├── domain/               # Capa de Dominio
-│   ├── entities/         # Entidades del negocio
-│   ├── repositories/     # Interfaces de repositorios
-│   └── services/         # Servicios del dominio
-├── infrastructure/       # Capa de Infraestructura
-│   ├── api/             # Clientes de API
-│   └── repositories/    # Implementaciones de repositorios
-├── shared/              # Código compartido
-│   ├── types/           # Tipos compartidos
-│   └── utils/           # Utilidades
-└── data/               # Datos mock y APIs simuladas
+├── domain/                 # Dominio - Entidades y Contratos
+│   ├── entities/          # Entidades del negocio
+│   └── repositories/      # Contratos de repositorios
+├── application/           # Aplicación - Casos de Uso
+│   └── use-cases/        # Lógica de negocio
+├── infrastructure/       # Infraestructura - Implementaciones
+│   └── repositories/     # Implementación de repositorios
+├── app/                  # Presentación - UI y Componentes
+│   ├── components/       # Componentes React
+│   ├── pages/           # Páginas de la aplicación
+│   └── hooks/           # Hooks personalizados
+├── shared/              # Utilidades compartidas
+│   └── utils/          # Funciones de utilidad
+└── data/               # Datos mock para desarrollo
 ```
 
 ## 🚀 Características
 
-### Dashboard Principal
+### Funcionalidades Principales
 
-- **Resumen de Créditos**: Visualización de créditos activos y deuda total
-- **Transacciones Recientes**: Últimas 5-10 transacciones realizadas
-- **Gráfico de Deuda**: Representación visual de la evolución de la deuda
-- **Productos Sugeridos**: Recomendaciones de productos financieros
+- 🔐 **Autenticación de usuarios** - Sistema de login seguro
+- 📊 **Dashboard financiero** - Resumen de cuentas y métricas
+- 💰 **Gestión de transacciones** - Historial y filtros avanzados
+- 🏦 **Solicitud de créditos** - Proceso de aplicación a productos crediticios
+- 📱 **Diseño responsive** - Adaptado para móvil y desktop
 
-### Gestión de Transacciones
+### Stack Tecnológico
 
-- **Lista Completa**: Todas las transacciones relacionadas con créditos
-- **Filtros Avanzados**: Por tipo, estado, fecha y descripción
-- **Detalle de Transacción**: Modal con información completa
+- **React 19.1** - Framework de frontend
+- **TypeScript** - Tipado estático
+- **Tailwind CSS 3.4** - Framework de estilos
+- **React Router DOM 7.7** - Enrutamiento
+- **Vite 7.0** - Build tool y dev server
 
-### Solicitud de Créditos
-
-- **Catálogo de Productos**: Tarjetas de crédito, préstamos personales, hipotecas
-- **Formulario Simplificado**: Simulación de solicitud de crédito
-- **Calculadora de Pagos**: Estimación automática de cuotas
-
-### Características Técnicas
-
-- **Autenticación**: Sistema de login con rutas protegidas
-- **Navegación**: Menú responsivo con navegación intuitiva
-- **Estados de Carga**: Spinners y mensajes de error elegantes
-- **Responsive Design**: Optimizada para dispositivos móviles y desktop
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Frontend**: React 19.1.0 + TypeScript
-- **Estilos**: Tailwind CSS 4.1.11
-- **Routing**: React Router DOM 7.7.1
-- **Build Tool**: Vite 7.0.4
-- **Linting**: ESLint con configuración TypeScript
-
-## 📦 Instalación y Configuración
+## 🛠️ Instalación y Configuración
 
 ### Prerrequisitos
 
-- Node.js (versión 18 o superior)
+- Node.js 18+
 - npm o yarn
 
-### Pasos de Instalación
-
-1. **Clonar el repositorio** (si aplica)
+### Instalación
 
 ```bash
+# Clonar el repositorio
 git clone <repository-url>
 cd my-fintech
-```
 
-2. **Instalar dependencias**
-
-```bash
+# Instalar dependencias
 npm install
-```
 
-3. **Ejecutar en modo desarrollo**
-
-```bash
+# Iniciar servidor de desarrollo
 npm run dev
 ```
 
-4. **Abrir en el navegador**
+La aplicación estará disponible en `http://localhost:5173`
 
-```
-http://localhost:5173
-```
-
-## 🔐 Credenciales de Demo
-
-Para probar la aplicación, utiliza las siguientes credenciales:
-
-- **Email**: `juan.perez@email.com`
-- **Contraseña**: `password123`
-
-## 📱 Uso de la Aplicación
-
-### 1. Inicio de Sesión
-
-- Ingresa las credenciales de demo o utiliza el botón "Demo" para llenar automáticamente
-
-### 2. Dashboard
-
-- Visualiza el resumen de tus créditos y transacciones
-- Explora los productos sugeridos
-
-### 3. Transacciones
-
-- Navega a "Transacciones de Crédito" para ver el historial completo
-- Utiliza los filtros para buscar transacciones específicas
-- Haz clic en "Ver detalle" para información completa
-
-### 4. Solicitar Crédito
-
-- Ve a "Solicitar Crédito" para explorar productos disponibles
-- Completa el formulario de solicitud
-- Revisa la estimación de pago antes de enviar
-
-## 🏦 Datos de Ejemplo
-
-La aplicación incluye datos mock realistas:
-
-### Créditos Disponibles
-
-- **Préstamo Hipotecario**: $150M, 8.5% EA
-- **Préstamo de Coche**: $45M, 12.0% EA
-- **Tarjeta de Crédito**: $8M, 24.0% EA
-- **Préstamo Personal**: $15M, 15.5% EA
-
-### Productos Financieros
-
-- Tarjeta de Crédito Gold (hasta $10M)
-- Préstamo Personal Express (hasta $50M)
-- Crédito Hipotecario VIS (hasta $350M)
-- Crédito Vehículo 0 Km (hasta $200M)
-
-## 🧪 Scripts Disponibles
+## 📋 Scripts Disponibles
 
 ```bash
-npm run dev          # Servidor de desarrollo
-npm run build        # Construcción para producción
-npm run preview      # Vista previa de la construcción
-npm run lint         # Verificación de código con ESLint
+# Desarrollo
+npm run dev          # Inicia servidor de desarrollo
+npm run build        # Construye para producción
+npm run preview      # Preview de la build
+
+# Calidad de Código
+npm run lint         # Ejecuta ESLint
+npm run lint:fix     # Corrige errores de ESLint automáticamente
+npm run format       # Formatea código con Prettier
+npm run type-check   # Verifica tipos de TypeScript
+
+# Git y Commits
+npm run commit       # Commit interactivo con Commitizen
+npm run commitlint   # Valida mensajes de commit
 ```
 
-## 📁 Estructura de Archivos Clave
+## 🔄 Flujo de Desarrollo
 
-```
-src/
-├── app/
-│   ├── components/
-│   │   ├── Layout.tsx           # Layout principal con navegación
-│   │   ├── ProtectedRoute.tsx   # Componente de rutas protegidas
-│   │   └── common.tsx           # Componentes comunes (Loading, Error)
-│   ├── pages/
-│   │   ├── LoginPage.tsx        # Página de autenticación
-│   │   ├── DashboardPage.tsx    # Dashboard principal
-│   │   ├── TransactionsPage.tsx # Gestión de transacciones
-│   │   └── ApplyCreditPage.tsx  # Solicitud de créditos
-│   └── hooks/
-│       ├── useAuth.ts           # Hook de autenticación
-│       ├── useCredits.ts        # Hook de gestión de créditos
-│       ├── useTransactions.ts   # Hook de transacciones
-│       └── useProducts.ts       # Hook de productos financieros
-├── domain/
-│   └── entities/
-│       ├── User.ts              # Entidad de usuario
-│       ├── Credit.ts            # Entidad de crédito
-│       ├── Transaction.ts       # Entidad de transacción
-│       └── Product.ts           # Entidad de producto financiero
-└── data/
-    ├── mockUsers.ts             # Datos de usuarios
-    ├── mockCredits.ts           # Datos de créditos
-    ├── mockTransactions.ts      # Datos de transacciones
-    └── mockProducts.ts          # Datos de productos
+### Estándares de Commits
+
+El proyecto usa **Conventional Commits** con Husky para asegurar calidad:
+
+```bash
+# Tipos de commit permitidos:
+feat:     Nueva funcionalidad
+fix:      Corrección de bugs
+docs:     Cambios en documentación
+style:    Cambios de formato (sin lógica)
+refactor: Refactoring de código
+perf:     Mejoras de performance
+test:     Añadir o corregir tests
+chore:    Mantenimiento general
+ci:       Cambios en CI/CD
+build:    Cambios en build system
 ```
 
-## 🔄 Flujo de Datos
+### Hooks de Git
 
-1. **UI Components** → Utilizan **Custom Hooks**
-2. **Custom Hooks** → Llaman **Use Cases**
-3. **Use Cases** → Utilizan **Repository Interfaces**
-4. **Repository Implementations** → Acceden a **Data Sources** (Mock/API)
+- **pre-commit**: Ejecuta lint-staged (ESLint + Prettier) y build
+- **commit-msg**: Valida formato del mensaje con commitlint
 
-## 🎨 Diseño y UX
+### Uso de Commitizen
 
-- **Paleta de Colores**: Azules corporativos con acentos en verde y rojo
-- **Tipografía**: Inter para una lectura óptima
-- **Iconografía**: Heroicons para consistencia visual
-- **Responsive**: Grid y flexbox para adaptabilidad
+```bash
+# En lugar de git commit, usar:
+npm run commit
+```
 
-## 🔮 Próximas Mejoras
+## 📱 Páginas y Funcionalidades
 
-- [ ] Gráficos interactivos con Chart.js o D3
-- [ ] Notificaciones push para pagos próximos
-- [ ] Exportación de reportes en PDF
-- [ ] Integración con APIs reales
-- [ ] Modo oscuro
+### 1. Login (`/`)
+
+- Autenticación con email/password
+- Validación de formularios
+- Redirección automática al dashboard
+
+**Usuarios de prueba:**
+
+- `juan@email.com` / `password123`
+- `maria@email.com` / `password123`
+
+### 2. Dashboard (`/dashboard`)
+
+- Resumen de saldos y cuentas
+- Gráficos de gastos mensuales
+- Accesos rápidos a funcionalidades
+- Cards de productos disponibles
+
+### 3. Transacciones (`/transactions`)
+
+- Historial completo de movimientos
+- Filtros por tipo y fecha
+- Información detallada de cada transacción
+- Indicadores visuales por categoría
+
+### 4. Solicitar Crédito (`/apply-credit`)
+
+- Formulario de solicitud paso a paso
+- Selección de productos crediticios
+- Cálculo automático de cuotas
+- Validación de datos en tiempo real
+
+## 🎨 Sistema de Diseño
+
+### Paleta de Colores
+
+- **Primario**: Azul (`blue-600`, `blue-500`)
+- **Secundario**: Verde (`green-500`, `green-600`)
+- **Alertas**: Rojo (`red-500`, `red-600`)
+- **Neutros**: Grises (`gray-100` a `gray-900`)
+
+### Componentes Base
+
+- **Layout**: Estructura principal con header y navegación
+- **ProtectedRoute**: Control de acceso por autenticación
+- **Common**: Componentes reutilizables (Button, Input, Card, etc.)
+
+## 🧪 Testing y Calidad
+
+### Herramientas de Calidad
+
+- **ESLint**: Análisis estático de código
+- **Prettier**: Formateo automático
+- **TypeScript**: Verificación de tipos
+- **Husky**: Git hooks para calidad
+- **lint-staged**: Validación solo en archivos modificados
+
+### Configuraciones
+
+- **ESLint**: Reglas estrictas para React y TypeScript
+- **Prettier**: Formateo consistente con 2 espacios, comillas simples
+- **Commitlint**: Conventional commits con scopes opcionales
+
+## 🏛️ Principios de Clean Architecture
+
+### Capas de la Aplicación
+
+1. **Domain (Dominio)**
+   - Entidades de negocio puras
+   - Interfaces de repositorios
+   - Sin dependencias externas
+
+2. **Application (Aplicación)**
+   - Casos de uso del negocio
+   - Orquestación de entidades
+   - Independiente de frameworks
+
+3. **Infrastructure (Infraestructura)**
+   - Implementaciones concretas
+   - Acceso a datos (APIs, DB)
+   - Detalles técnicos
+
+4. **App (Presentación)**
+   - Componentes de UI
+   - Manejo de estado local
+   - Interacción con usuarios
+
+### Beneficios
+
+- **Testabilidad**: Fácil testing unitario
+- **Mantenibilidad**: Código organizado y desacoplado
+- **Escalabilidad**: Fácil extensión de funcionalidades
+- **Flexibilidad**: Cambio de tecnologías sin afectar lógica
+
+## 🔮 Próximos Pasos
+
+### Funcionalidades Pendientes
+
 - [ ] Tests unitarios y de integración
+- [ ] Autenticación con JWT
+- [ ] Conexión a APIs reales
+- [ ] Notificaciones push
+- [ ] Reportes y analytics
+- [ ] Modo offline
+
+### Mejoras Técnicas
+
+- [ ] Implementar React Query/SWR
+- [ ] Añadir Storybook para componentes
+- [ ] Configurar CI/CD
+- [ ] Dockerización
+- [ ] Monitoreo y logging
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Usa commits convencionales (`npm run commit`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
 
 ## 📄 Licencia
 
-Este proyecto es de uso educativo y de demostración.
-
-## 👨‍💻 Desarrollador
-
-Desarrollado siguiendo las mejores prácticas de Clean Architecture y DDD para una aplicación fintech moderna y escalable.
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
