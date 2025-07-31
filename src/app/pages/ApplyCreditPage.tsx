@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useProducts } from '../hooks/useProducts';
+import { useAuth } from '../core/services/auth.service';
+import { useProducts } from '../core/services/products.service';
 import { LoadingSpinner, ErrorMessage } from '../components/common';
 import { formatCurrency } from '../../shared/utils/formatters';
 import { getProductTypeLabel } from '../../shared/utils/labels';
@@ -180,7 +180,7 @@ export const ApplyCreditPage: React.FC = () => {
                   <div className="mb-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">Requisitos:</p>
                     <ul className="text-xs text-gray-600 dark:text-dark-text-secondary space-y-1">
-                      {product.requirements.slice(0, 3).map((req, index) => (
+                      {product.requirements.slice(0, 3).map((req: string, index: number) => (
                         <li key={index} className="flex items-start">
                           <span className="text-green-500 mr-1">•</span>
                           {req}

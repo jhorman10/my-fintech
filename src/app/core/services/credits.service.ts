@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import type { Credit, CreditSummary } from '../../domain/entities/Credit';
-import { CreditUseCase } from '../../application/use-cases/CreditUseCase';
-import { MockCreditRepository } from '../../infrastructure/repositories/MockCreditRepository';
+import type { Credit, CreditSummary } from '../../../domain/entities/Credit';
+import { CreditUseCase } from '../../../application/use-cases/CreditUseCase';
+import { MockCreditRepository } from '../../../infrastructure/repositories/MockCreditRepository';
 
 const creditRepository = new MockCreditRepository();
 const creditUseCase = new CreditUseCase(creditRepository);

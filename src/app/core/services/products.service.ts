@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import type { FinancialProduct } from '../../domain/entities/Product';
-import { ProductUseCase } from '../../application/use-cases/ProductUseCase';
-import { MockProductRepository } from '../../infrastructure/repositories/MockProductRepository';
+import type { FinancialProduct } from '../../../domain/entities/Product';
+import { ProductUseCase } from '../../../application/use-cases/ProductUseCase';
+import { MockProductRepository } from '../../../infrastructure/repositories/MockProductRepository';
 
 const productRepository = new MockProductRepository();
 const productUseCase = new ProductUseCase(productRepository);

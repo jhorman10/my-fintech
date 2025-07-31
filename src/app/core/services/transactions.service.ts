@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import type { Transaction, TransactionFilter } from '../../domain/entities/Transaction';
-import { TransactionUseCase } from '../../application/use-cases/TransactionUseCase';
-import { MockTransactionRepository } from '../../infrastructure/repositories/MockTransactionRepository';
+import type { Transaction, TransactionFilter } from '../../../domain/entities/Transaction';
+import { TransactionUseCase } from '../../../application/use-cases/TransactionUseCase';
+import { MockTransactionRepository } from '../../../infrastructure/repositories/MockTransactionRepository';
 
 const transactionRepository = new MockTransactionRepository();
 const transactionUseCase = new TransactionUseCase(transactionRepository);

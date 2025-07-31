@@ -6,9 +6,9 @@ import { DashboardPage } from './app/pages/DashboardPage';
 import { TransactionsPage } from './app/pages/TransactionsPage';
 import { ApplyCreditPage } from './app/pages/ApplyCreditPage';
 import { NotFoundPage } from './app/pages/NotFoundPage';
-import { useAuth } from './app/hooks/useAuth';
+import { useAuth } from './app/core/services/auth.service';
 import { LoadingSpinner } from './app/components/common';
-import { ThemeProvider } from './app/hooks/useTheme';
+import { ThemeProvider } from './app/core/services/theme.service';
 import './App.css';
 
 function App() {

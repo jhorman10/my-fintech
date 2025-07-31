@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useCredits } from '../hooks/useCredits';
-import { useTransactions } from '../hooks/useTransactions';
-import { useProducts } from '../hooks/useProducts';
+import { useAuth } from '../core/services/auth.service';
+import { useCredits } from '../core/services/credits.service';
+import { useTransactions } from '../core/services/transactions.service';
+import { useProducts } from '../core/services/products.service';
 import { LoadingSpinner, ErrorMessage } from '../components/common';
 import { formatCurrency, formatDate, calculateDaysUntil } from '../../shared/utils/formatters';
 import {

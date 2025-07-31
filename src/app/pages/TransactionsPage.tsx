@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import { useTransactions } from '../hooks/useTransactions';
-import { useCredits } from '../hooks/useCredits';
+import { useAuth } from '../core/services/auth.service';
+import { useTransactions } from '../core/services/transactions.service';
+import { useCredits } from '../core/services/credits.service';
 import { LoadingSpinner, ErrorMessage } from '../components/common';
 import { formatCurrency, formatDate } from '../../shared/utils/formatters';
 import { getTransactionTypeLabel, getTransactionTypeColor } from '../../shared/utils/labels';

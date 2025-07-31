@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../core/services/auth.service';
 import { ThemeToggle } from './ThemeToggle';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

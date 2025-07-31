@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import type { User } from '../../domain/entities/User';
-import { AuthUseCase } from '../../application/use-cases/AuthUseCase';
-import { MockAuthRepository } from '../../infrastructure/repositories/MockAuthRepository';
+import type { User } from '../../../domain/entities/User';
+import { AuthUseCase } from '../../../application/use-cases/AuthUseCase';
+import { MockAuthRepository } from '../../../infrastructure/repositories/MockAuthRepository';
 
 const authRepository = new MockAuthRepository();
 const authUseCase = new AuthUseCase(authRepository);

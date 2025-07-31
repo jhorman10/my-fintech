@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../core/services/auth.service';
 import { LoadingSpinner } from '../components/common';
 
 export const LoginPage: React.FC = () => {
