@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../core/services/auth.service';
+import { useAuth } from '../hooks/useAuth';
 import { LoadingSpinner } from '../components/common';
 
-export const LoginPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { user, login, loading, error, isAuthenticated } = useAuth();
@@ -124,3 +124,5 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+
+export default LoginPage;

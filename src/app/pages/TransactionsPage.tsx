@@ -1,322 +1,308 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../core/services/auth.service';
-import { useTransactions } from '../core/services/transactions.service';
-import { useCredits } from '../core/services/credits.service';
-import { LoadingSpinner, ErrorMessage } from '../components/common';
-import { formatCurrency, formatDate } from '../../shared/utils/formatters';
-import { getTransactionTypeLabel, getTransactionTypeColor } from '../../shared/utils/labels';
-import type { TransactionFilter, Transaction } from '../../domain/entities/Transaction';
+import React, { memo, useState, useMemo, useCallback, Suspense, lazy } from 'react';
+import { SectionSuspenseFallback } from '../components/LazyLoading';
 
-export const TransactionsPage: React.FC = () => {
-  const { user } = useAuth();
-  const { transactions, loading, error, loadTransactions } = useTransactions(user?.id || null);
-  const { credits } = useCredits(user?.id || null);
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-  const [filter, setFilter] = useState<TransactionFilter>({});
+// Lazy load transaction components
+const TransactionModal = lazy(() => import('../components/transactions/TransactionModal'));
+
+interface Transaction {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  type: 'pago' | 'desembolso';
+  creditType: string;
+  status: 'completado' | 'pendiente' | 'fallido';
+  reference: string;
+  creditId: string;
+}
+
+const TransactionsPage: React.FC = memo(() => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'pago' | 'desembolso'>('all');
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (user?.id) {
-      loadTransactions(filter);
+  // Mock data completo de transacciones
+  const allTransactions = useMemo<Transaction[]>(() => [
+    {
+      id: '1',
+      description: 'Pago cuota préstamo hipotecario',
+      amount: -1250000,
+      date: '2024-01-15T10:30:00',
+      type: 'pago',
+      creditType: 'Préstamo Hipotecario',
+      status: 'completado',
+      reference: 'REF001234567',
+      creditId: 'CRED-HIP-001'
+    },
+    {
+      id: '2',
+      description: 'Desembolso tarjeta de crédito',
+      amount: 500000,
+      date: '2024-01-14T15:45:00',
+      type: 'desembolso',
+      creditType: 'Tarjeta de Crédito',
+      status: 'completado',
+      reference: 'REF001234568',
+      creditId: 'CRED-TC-002'
+    },
+    {
+      id: '3',
+      description: 'Pago cuota préstamo de coche',
+      amount: -480000,
+      date: '2024-01-12T09:15:00',
+      type: 'pago',
+      creditType: 'Préstamo de Coche',
+      status: 'completado',
+      reference: 'REF001234569',
+      creditId: 'CRED-AUTO-003'
+    },
+    {
+      id: '4',
+      description: 'Pago mínimo tarjeta de crédito',
+      amount: -150000,
+      date: '2024-01-10T14:20:00',
+      type: 'pago',
+      creditType: 'Tarjeta de Crédito',
+      status: 'completado',
+      reference: 'REF001234570',
+      creditId: 'CRED-TC-002'
+    },
+    {
+      id: '5',
+      description: 'Desembolso préstamo personal',
+      amount: 2000000,
+      date: '2024-01-08T11:00:00',
+      type: 'desembolso',
+      creditType: 'Préstamo Personal',
+      status: 'pendiente',
+      reference: 'REF001234571',
+      creditId: 'CRED-PERS-004'
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id, filter]);
+  ], []);
 
-  const filteredTransactions = transactions.filter(transaction =>
-    transaction.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtered transactions based on search and filter
+  const filteredTransactions = useMemo(() => {
+    return allTransactions.filter(transaction => {
+      const matchesSearch = transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          transaction.creditType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          transaction.reference.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesFilter = filterType === 'all' || transaction.type === filterType;
+      
+      return matchesSearch && matchesFilter;
+    });
+  }, [allTransactions, searchTerm, filterType]);
 
-  const handleFilterChange = (key: keyof TransactionFilter, value: string) => {
-    setFilter(prev => ({
-      ...prev,
-      [key]: value || undefined,
-    }));
-  };
+  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  }, []);
 
-  const getCreditName = (creditId: string) => {
-    const credit = credits.find(c => c.id === creditId);
-    return credit ? credit.name : 'Crédito no encontrado';
-  };
+  const handleFilterChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterType(event.target.value as 'all' | 'pago' | 'desembolso');
+  }, []);
 
-  if (!user) {
-    return <div>Usuario no encontrado</div>;
-  }
+  const handleTransactionClick = useCallback((transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedTransaction(null);
+  }, []);
+
+  const formatCurrency = useCallback((amount: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0
+    }).format(Math.abs(amount));
+  }, []);
+
+  const formatDateTime = useCallback((dateString: string) => {
+    return new Date(dateString).toLocaleString('es-CO', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }, []);
+
+  const getStatusColor = useCallback((status: Transaction['status']) => {
+    switch (status) {
+      case 'completado':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
+      case 'pendiente':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300';
+      case 'fallido':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+    }
+  }, []);
+
+  const getTypeIcon = useCallback((type: Transaction['type']) => {
+    return type === 'pago' ? '💰' : '📤';
+  }, []);
 
   return (
-    <div className="px-4 sm:px-0">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Transacciones de Crédito</h1>
-        <p className="text-gray-600">Historial completo de tus movimientos crediticios</p>
-      </div>
+    <main className="transactions-page">
+      <div className="transactions-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Transacciones de Crédito
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
+            Historial completo de pagos y desembolsos de tus productos crediticios
+          </p>
+        </header>
 
-      {/* Filters */}
-      <div className="bg-white dark:bg-dark-surface rounded-lg shadow-sm border p-6 mb-6">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-dark-text mb-4">Filtros</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Buscar por descripción
-            </label>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Buscar transacciones..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tipo de transacción
-            </label>
-            <select
-              value={filter.type || ''}
-              onChange={e => handleFilterChange('type', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todos los tipos</option>
-              <option value="PAYMENT">Pago</option>
-              <option value="DISBURSEMENT">Desembolso</option>
-              <option value="INTEREST_CHARGE">Cargo por Intereses</option>
-              <option value="FEE">Comisión</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-            <select
-              value={filter.status || ''}
-              onChange={e => handleFilterChange('status', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todos los estados</option>
-              <option value="COMPLETED">Completado</option>
-              <option value="PENDING">Pendiente</option>
-              <option value="FAILED">Fallido</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Crédito</label>
-            <select
-              value={filter.creditId || ''}
-              onChange={e => handleFilterChange('creditId', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todos los créditos</option>
-              {credits.map(credit => (
-                <option key={credit.id} value={credit.id}>
-                  {credit.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Transactions Table */}
-      <div className="bg-white dark:bg-dark-surface rounded-lg shadow-sm border overflow-hidden">
-        {loading ? (
-          <div className="p-8">
-            <LoadingSpinner text="Cargando transacciones..." />
-          </div>
-        ) : error ? (
-          <div className="p-8">
-            <ErrorMessage message={error} onRetry={() => loadTransactions(filter)} />
-          </div>
-        ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Fecha
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Descripción
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Crédito
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Tipo
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Monto
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Estado
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-dark-surface divide-y divide-gray-200">
-                  {filteredTransactions.length > 0 ? (
-                    filteredTransactions.map(transaction => (
-                      <tr key={transaction.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {formatDate(transaction.date)}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900">
-                          <div className="max-w-xs truncate">{transaction.description}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {getCreditName(transaction.creditId)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getTransactionTypeColor(transaction.type)}`}
-                          >
-                            {getTransactionTypeLabel(transaction.type)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <span className={getTransactionTypeColor(transaction.type)}>
-                            {transaction.type === 'PAYMENT' ? '-' : '+'}
-                            {formatCurrency(transaction.amount)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                              transaction.status === 'COMPLETED'
-                                ? 'bg-green-100 text-green-800'
-                                : transaction.status === 'PENDING'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : 'bg-red-100 text-red-800'
-                            }`}
-                          >
-                            {transaction.status === 'COMPLETED'
-                              ? 'Completado'
-                              : transaction.status === 'PENDING'
-                                ? 'Pendiente'
-                                : 'Fallido'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button
-                            onClick={() => setSelectedTransaction(transaction)}
-                            className="text-blue-600 hover:text-blue-900"
-                          >
-                            Ver detalle
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
-                        {searchTerm ||
-                        Object.keys(filter).some(key => filter[key as keyof TransactionFilter])
-                          ? 'No se encontraron transacciones con los filtros aplicados'
-                          : 'No hay transacciones disponibles'}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+        {/* Filters and Search */}
+        <section className="filters-section bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Buscar transacciones
+              </label>
+              <input
+                id="search"
+                type="text"
+                placeholder="Buscar por descripción, tipo de crédito o referencia..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              />
             </div>
-          </>
-        )}
+            <div className="md:w-48">
+              <label htmlFor="filter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Filtrar por tipo
+              </label>
+              <select
+                id="filter"
+                value={filterType}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+                <option value="all">Todos</option>
+                <option value="pago">Pagos</option>
+                <option value="desembolso">Desembolsos</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        {/* Results Summary */}
+        <div className="mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Mostrando {filteredTransactions.length} de {allTransactions.length} transacciones
+          </p>
+        </div>
+
+        {/* Transactions Table */}
+        <section className="transactions-table bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Transacción
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Tipo de Crédito
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Fecha
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Monto
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Estado
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {filteredTransactions.map((transaction) => (
+                  <tr
+                    key={transaction.id}
+                    onClick={() => handleTransactionClick(transaction)}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        handleTransactionClick(transaction);
+                      }
+                    }}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="text-2xl mr-3">
+                          {getTypeIcon(transaction.type)}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            {transaction.description}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {transaction.reference}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                      {transaction.creditType}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {formatDateTime(transaction.date)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`text-sm font-semibold ${
+                        transaction.amount > 0 
+                          ? 'text-green-600 dark:text-green-400' 
+                          : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {transaction.amount > 0 ? '+' : '-'}{formatCurrency(transaction.amount)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(transaction.status)}`}>
+                        {transaction.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          {filteredTransactions.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 dark:text-gray-400">
+                No se encontraron transacciones que coincidan con los criterios de búsqueda.
+              </p>
+            </div>
+          )}
+        </section>
       </div>
 
       {/* Transaction Detail Modal */}
-      {selectedTransaction && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Detalle de Transacción</h3>
-                <button
-                  onClick={() => setSelectedTransaction(null)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">ID de Transacción</p>
-                    <p className="text-sm text-gray-900">{selectedTransaction.id}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Número de Referencia</p>
-                    <p className="text-sm text-gray-900">
-                      {selectedTransaction.referenceNumber || 'N/A'}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Descripción</p>
-                  <p className="text-sm text-gray-900">{selectedTransaction.description}</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Fecha</p>
-                    <p className="text-sm text-gray-900">{formatDate(selectedTransaction.date)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Tipo</p>
-                    <p className="text-sm text-gray-900">
-                      {getTransactionTypeLabel(selectedTransaction.type)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Monto</p>
-                    <p
-                      className={`text-lg font-bold ${getTransactionTypeColor(selectedTransaction.type)}`}
-                    >
-                      {selectedTransaction.type === 'PAYMENT' ? '-' : '+'}
-                      {formatCurrency(selectedTransaction.amount)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Saldo Después</p>
-                    <p className="text-sm text-gray-900">
-                      {formatCurrency(selectedTransaction.balanceAfter)}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Crédito Asociado</p>
-                  <p className="text-sm text-gray-900">
-                    {getCreditName(selectedTransaction.creditId)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={() => setSelectedTransaction(null)}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {isModalOpen && selectedTransaction && (
+        <Suspense fallback={<SectionSuspenseFallback />}>
+          <TransactionModal
+            transaction={selectedTransaction}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+          />
+        </Suspense>
       )}
-    </div>
+    </main>
   );
-};
+});
+
+TransactionsPage.displayName = 'TransactionsPage';
+
+export default TransactionsPage;

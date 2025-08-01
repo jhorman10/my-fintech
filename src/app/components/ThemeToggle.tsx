@@ -1,8 +1,9 @@
 import React from 'react';
-import { useTheme } from '../core/services/theme.service';
+import { useTheme } from '../hooks/useTheme';
 
 export const ThemeToggle: React.FC = () => {
-  const { toggleTheme, isDark } = useTheme();
+  const { toggleTheme, theme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
     <button
